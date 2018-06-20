@@ -1,6 +1,8 @@
 ﻿Imports PdfSharp
 Imports PdfSharp.Drawing
 Imports PdfSharp.Pdf
+Imports System.IO
+Imports System.Windows
 
 Module Parser
 
@@ -11,13 +13,32 @@ Module Parser
         parsedDoc.Info.Title = "Parsed Document"
 
         'Adds a page for every image in the database.
-        'TODO add SQL database and image conversion.
-        Dim page As PdfPage = parsedDoc.AddPage
+
+        Dim dirPath As String = "files\"
+        For Each i As String In Directory.GetFiles(dirPath) 'Retrieves the files inside of the specififed path.
+            If i.EndsWith(".pdf") Then
+                Dim newPage As PdfPage = parsedDoc.AddPage
+                Dim gfx As XGraphics = XGraphics.FromPdfPage(newPage) 'Creates a gfx object.
+
+            ElseIf i.EndsWith("jpg") Or i.EndsWith(".jpeg") Then
+                Dim newPage As PdfPage = parsedDoc.AddPage
+                Dim gfx As XGraphics = XGraphics.FromPdfPage(newPage) 'Creates a gfx object.
+                Dim image As XImage = XImage.FromFile(i)
+                Dim imgPoint As New Point(0, 0)
+                gfx.DrawImage(image, imgPoint)
+
+            End If
+        Next
+
 
         'Saves the created PDF document as a file and displays it.
         Dim filename As String = "Doc.pdf"
         parsedDoc.Save(filename)
         Process.Start(filename)
+    End Sub
+
+    Sub drawJPG()
+
     End Sub
 
 End Module
