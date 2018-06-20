@@ -30,10 +30,25 @@ Module Parser
         Process.Start(filename)
     End Sub
 
+    Public Function getXImage(data As String, filetype As String) As XImage 'Gets an XImage object from a hex String.
+        Dim path As String = "files\"
+        Dim newFile As StreamWriter
+        If filetype = "pdf" Then
+            newFile = New StreamWriter(path + "file.pdf")
+            newFile.Write(data)
+        ElseIf filetype = "jpg" Or filetype = "jpeg" Then
+            newFile = New StreamWriter(path + "file.jpg")
+            newFile.Write(data)
+        End If
+
+        Dim image As XImage = XImage.FromFile(path)
+        'My.Computer.FileSystem.DeleteFile(path) 'Deletes the file because we don't need it anymore.
+        getXImage = image 'Returns the image file.
+    End Function
+
 End Module
 
 Public Class Parser_Window
-    Inherits System.Windows.Forms.Form
     'Create ADO.NET objects.
     Private Conn As SqlConnection
     Private Cmd As SqlCommand
