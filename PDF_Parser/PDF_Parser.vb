@@ -3,6 +3,8 @@ Imports PdfSharp.Drawing
 Imports PdfSharp.Pdf
 Imports System.IO
 Imports System.Windows
+Imports System.Data.SqlClient
+
 Module Parser
 
     Sub Main()
@@ -30,6 +32,13 @@ Module Parser
 End Module
 
 Public Class Parser_Window
+    Inherits System.Windows.Forms.Form
+    'Crear objetos de ADO.NET.
+    Private Conn As SqlConnection
+    Private Cmd As SqlCommand
+    Private Reader As SqlDataReader
+    Private results As String
+
     Private Sub Parser_Window_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
     End Sub
