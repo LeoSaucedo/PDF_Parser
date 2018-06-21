@@ -46,12 +46,11 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PdfSharp">
-      <HintPath>..\..\..\..\Documents\GitHub\Zell\PDF_Parser\Options\PDFsharp\GDI+\PdfSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="PdfSharp-WPF">
+    <Reference Include="PdfSharp-WPF, Version=1.31.1731.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Downloads\PDFSharp-MigraDocFoundation-1_31\MigraDoc\samples\Samples C#\Based on WPF\MixMigraDocAndPdfSharp\bin\Debug\PdfSharp-WPF.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -124,6 +123,9 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
