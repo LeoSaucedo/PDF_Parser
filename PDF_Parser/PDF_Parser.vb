@@ -1,5 +1,4 @@
-﻿Imports PdfSharp
-Imports PdfSharp.Drawing
+﻿Imports PdfSharp.Drawing
 Imports PdfSharp.Pdf
 Imports System.IO
 Imports System.Windows
@@ -34,20 +33,23 @@ Module Parser
 
 
 
-    Public Function getXImage(image As Image) As XImage 'Gets an XImage object from a hex String.
+    Public Function getXImage(image As Image) As XImage 'Creates an XImage object from an Image.
         Dim path As String = "files\"
         Dim bmpsrc As BitmapSource = Nothing
-
         'Convert the given image into a bitmap.
         Dim bitmap = New Bitmap(image)
+
         'Convert the bitmap into bitmapData.
         Dim bitmapData = bitmap.LockBits(New Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly,
                                          bitmap.PixelFormat)
-        'Create a PixelFormat object.
+
         'Create a BitmapSource from the raw BitmapData.
         bmpsrc = BitmapSource.Create(bitmapData.Width, bitmapData.Height, bitmap.HorizontalResolution, bitmap.VerticalResolution,
                                      System.Windows.Media.PixelFormats.Bgr32, Nothing, bitmapData.Scan0, bitmapData.Stride * bitmapData.Height,
                                      bitmapData.Stride)
+
+
+        'Create an XImage object from the BitmapSource object.
         Dim ximg As XImage = XImage.FromBitmapSource(bmpsrc)
         getXImage = ximg 'Returns the image file.
     End Function
