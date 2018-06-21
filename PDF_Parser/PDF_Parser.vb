@@ -6,7 +6,6 @@ Imports System.Data.SqlClient
 Imports System.Windows.Media.Imaging
 Imports System.Drawing.Imaging
 
-
 Module Parser
 
     Sub Main()
@@ -14,6 +13,10 @@ Module Parser
         Console.WriteLine("Initiating file parse.")
         Dim parsedDoc As PdfDocument = New PdfDocument
         parsedDoc.Info.Title = "Parsed Document"
+
+        'Creates a blank array of image objects.
+        Dim images As New List(Of Image)
+
 
         'Adds a page for every image in the specified directory.
         Dim dirPath As String = "files\"
@@ -25,16 +28,22 @@ Module Parser
             Dim imgPoint As New Point(0, 0)
             gfx.DrawImage(ximg, imgPoint)
         Next
+
+        For Each image In images
+            Dim newPage As PdfPage = parsedDoc.AddPage
+            Dim gfx As XGraphics = XGraphics.FromPdfPage(newPage)
+            Dim ximg As XImage = getXImage(image)
+            Dim imgPoint As New Point(0, 0)
+            gfx.DrawImage(ximg, imgPoint)
+        Next
+
         'Saves the created PDF document as a file and displays it.
         Dim filename As String = "Doc.pdf"
         parsedDoc.Save(filename)
         Process.Start(filename)
     End Sub
 
-
-
     Public Function getXImage(image As Image) As XImage 'Creates an XImage object from an Image.
-        Dim path As String = "files\"
         Dim bmpsrc As BitmapSource = Nothing
         'Convert the given image into a bitmap.
         Dim bitmap = New Bitmap(image)
@@ -48,10 +57,14 @@ Module Parser
                                      System.Windows.Media.PixelFormats.Bgr32, Nothing, bitmapData.Scan0, bitmapData.Stride * bitmapData.Height,
                                      bitmapData.Stride)
 
-
         'Create an XImage object from the BitmapSource object.
         Dim ximg As XImage = XImage.FromBitmapSource(bmpsrc)
         getXImage = ximg 'Returns the image file.
+    End Function
+
+    Public Function getImageElements() 'Adds every image element from the SQL database to the images List.
+
+        Return Nothing
     End Function
 
 End Module
@@ -69,7 +82,6 @@ Public Class Parser_Window
         'Create a Command object.
         Cmd = Conn.CreateCommand
         Cmd.CommandText = "SELECT varbinary from FILES" 'Default/sample database column with binary files.
-
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles ParseButton.Click
