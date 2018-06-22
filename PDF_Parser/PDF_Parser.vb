@@ -49,6 +49,12 @@ Module Parser
                 Dim gfx As XGraphics = XGraphics.FromPdfPage(newPage) 'Creates a gfx object.
                 Dim rect As XRect = New XRect(0, 0, ximg.PixelWidth, ximg.PixelHeight)
                 gfx.DrawImage(ximg, rect)
+                newPage = parsedDoc.AddPage
+                newPage.Width = ximg.PixelWidth
+                newPage.Height = ximg.PixelHeight
+                gfx = XGraphics.FromPdfPage(newPage) 'Creates a gfx object.
+                rect = New XRect(0, 0, ximg.PixelWidth, ximg.PixelHeight)
+                gfx.DrawImage(ximg, rect)
             Else
                 Console.WriteLine("Invalid file format.")
             End If
