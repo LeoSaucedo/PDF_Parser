@@ -38,23 +38,18 @@ Module Parser
                 'Create a fileStream from the specified file.
                 Dim fs As FileStream = New FileStream(i, FileMode.Open)
                 Dim imgStream As Stream = fs
-
-                'Create the XImage object from the stream.
-                Dim ximg As XImage = getXImage(fs)
-
-                'Draw the image on the PDF.
-                Dim newPage As PdfPage = parsedDoc.AddPage
-                newPage.Width = ximg.PixelWidth
-                newPage.Height = ximg.PixelHeight
-                Dim gfx As XGraphics = XGraphics.FromPdfPage(newPage) 'Creates a gfx object.
-                Dim rect As XRect = New XRect(0, 0, ximg.PixelWidth, ximg.PixelHeight)
-                gfx.DrawImage(ximg, rect)
-                newPage = parsedDoc.AddPage
-                newPage.Width = ximg.PixelWidth
-                newPage.Height = ximg.PixelHeight
-                gfx = XGraphics.FromPdfPage(newPage) 'Creates a gfx object.
-                rect = New XRect(0, 0, ximg.PixelWidth, ximg.PixelHeight)
-                gfx.DrawImage(ximg, rect)
+                Dim form As XPdfForm = XPdfForm.FromStream(fs)
+                Dim numpgs As Integer = form.PageCount
+                For index As Integer = 1 To numpgs
+                    form.PageNumber = index
+                    'Draw the image on the PDF.
+                    Dim newPage As PdfPage = parsedDoc.AddPage
+                    newPage.Width = form.PixelWidth
+                    newPage.Height = form.PixelHeight
+                    Dim gfx As XGraphics = XGraphics.FromPdfPage(newPage) 'Creates a gfx object.
+                    Dim rect As XRect = New XRect(0, 0, form.PixelWidth, form.PixelHeight)
+                    gfx.DrawImage(form, rect)
+                Next
             Else
                 Console.WriteLine("Invalid file format.")
             End If
