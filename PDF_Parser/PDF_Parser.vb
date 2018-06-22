@@ -14,27 +14,44 @@ Module Parser
         Dim parsedDoc As PdfDocument = New PdfDocument
         parsedDoc.Info.Title = "Parsed Document"
 
-        'Creates a blank array of image objects.
-        Dim images As New List(Of Image)
-
-
         'Adds a page for every image in the specified directory.
         Dim dirPath As String = "files\"
         For Each i As String In Directory.GetFiles(dirPath) 'Retrieves the files inside of the specififed path.
-            Dim newPage As PdfPage = parsedDoc.AddPage
-            Dim gfx As XGraphics = XGraphics.FromPdfPage(newPage) 'Creates a gfx object.
-            Dim img As Image = Image.FromFile(i)
-            Dim ximg As XImage = getXImage(img)
-            Dim imgPoint As New Point(0, 0)
-            gfx.DrawImage(ximg, imgPoint)
-        Next
+            If i.EndsWith(".jpg") Then
 
-        For Each image In images
-            Dim newPage As PdfPage = parsedDoc.AddPage
-            Dim gfx As XGraphics = XGraphics.FromPdfPage(newPage)
-            Dim ximg As XImage = getXImage(image)
-            Dim imgPoint As New Point(0, 0)
-            gfx.DrawImage(ximg, imgPoint)
+                'Create an image object and convert it to a Stream.
+                Dim img As Image = Image.FromFile(i)
+                Dim imgStream As Stream = toStream(img, img.RawFormat)
+
+                'Convert the imgStream to an XImage.
+                Dim ximg As XImage = getXImage(imgStream)
+
+                'Draw the image on the PDF.
+                Dim newPage As PdfPage = parsedDoc.AddPage
+                newPage.Width = ximg.PixelWidth
+                newPage.Height = ximg.PixelHeight
+                Dim gfx As XGraphics = XGraphics.FromPdfPage(newPage) 'Creates a gfx object.
+                Dim rect As XRect = New XRect(0, 0, ximg.PixelWidth, ximg.PixelHeight)
+                gfx.DrawImage(ximg, rect)
+
+            ElseIf i.EndsWith(".pdf") Then
+                'Create a fileStream from the specified file.
+                Dim fs As FileStream = New FileStream(i, FileMode.Open)
+                Dim imgStream As Stream = fs
+
+                'Create the XImage object from the stream.
+                Dim ximg As XImage = getXImage(fs)
+
+                'Draw the image on the PDF.
+                Dim newPage As PdfPage = parsedDoc.AddPage
+                newPage.Width = ximg.PixelWidth
+                newPage.Height = ximg.PixelHeight
+                Dim gfx As XGraphics = XGraphics.FromPdfPage(newPage) 'Creates a gfx object.
+                Dim rect As XRect = New XRect(0, 0, ximg.PixelWidth, ximg.PixelHeight)
+                gfx.DrawImage(ximg, rect)
+            Else
+                Console.WriteLine("Invalid file format.")
+            End If
         Next
 
         'Saves the created PDF document as a file and displays it.
@@ -43,23 +60,15 @@ Module Parser
         Process.Start(filename)
     End Sub
 
-    Public Function getXImage(image As Image) As XImage 'Creates an XImage object from an Image.
-        Dim bmpsrc As BitmapSource = Nothing
-        'Convert the given image into a bitmap.
-        Dim bitmap = New Bitmap(image)
+    Public Function getXImage(stream As Stream) As XImage 'Creates an XImage object from a Stream.
+        Dim ximg As XImage = XImage.FromStream(stream)
+        getXImage = ximg
+    End Function
 
-        'Convert the bitmap into bitmapData.
-        Dim bitmapData = bitmap.LockBits(New Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly,
-                                         bitmap.PixelFormat)
-
-        'Create a BitmapSource from the raw BitmapData.
-        bmpsrc = BitmapSource.Create(bitmapData.Width, bitmapData.Height, bitmap.HorizontalResolution, bitmap.VerticalResolution,
-                                     System.Windows.Media.PixelFormats.Bgr32, Nothing, bitmapData.Scan0, bitmapData.Stride * bitmapData.Height,
-                                     bitmapData.Stride)
-
-        'Create an XImage object from the BitmapSource object.
-        Dim ximg As XImage = XImage.FromBitmapSource(bmpsrc)
-        getXImage = ximg 'Returns the image file.
+    Public Function toStream(image As Image, format As ImageFormat) As Stream 'Saves an image object to a Stream.
+        Dim stream As MemoryStream = New MemoryStream()
+        image.Save(stream, image.RawFormat)
+        toStream = stream
     End Function
 
     Public Function getImageElements() 'Adds every image element from the SQL database to the images List.
@@ -70,18 +79,7 @@ Module Parser
 End Module
 
 Public Class Parser_Window
-    'Create ADO.NET objects.
-    Private Conn As SqlConnection
-    Private Cmd As SqlCommand
-    Private Reader As SqlDataReader
-    Private results As String
-
     Private Sub Parser_Window_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        'Create a Connection object.
-        Conn = New SqlConnection() 'Insert connection details here.
-        'Create a Command object.
-        Cmd = Conn.CreateCommand
-        Cmd.CommandText = "SELECT varbinary from FILES" 'Default/sample database column with binary files.
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles ParseButton.Click

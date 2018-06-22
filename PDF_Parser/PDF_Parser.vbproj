@@ -46,9 +46,8 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PdfSharp-WPF, Version=1.31.1731.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Downloads\PDFSharp-MigraDocFoundation-1_31\MigraDoc\samples\Samples C#\Based on WPF\MixMigraDocAndPdfSharp\bin\Debug\PdfSharp-WPF.dll</HintPath>
+    <Reference Include="PdfSharp">
+      <HintPath>..\..\..\Downloads\PDFsharp-MigraDocFoundation-1_50-beta5\PDFsharp\src\PdfSharp\bin\Debug\PdfSharp.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
