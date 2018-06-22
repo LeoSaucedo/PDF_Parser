@@ -7,5 +7,5 @@ If you want to use this code, however, change line 15, the `dirPath` variable, t
 
 Thank you for your visit!
 
-#### Dependencies.
+#### Dependencies
 - This program uses the PDFSharp dependency. You can download it [here](http://www.pdfsharp.net/Downloads.ashx).
