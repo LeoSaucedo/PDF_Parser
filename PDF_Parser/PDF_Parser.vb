@@ -1,9 +1,6 @@
 ﻿Imports PdfSharp.Drawing
 Imports PdfSharp.Pdf
 Imports System.IO
-Imports System.Windows
-Imports System.Data.SqlClient
-Imports System.Windows.Media.Imaging
 Imports System.Drawing.Imaging
 
 Module Parser
@@ -34,7 +31,7 @@ Module Parser
                 Dim rect As XRect = New XRect(0, 0, ximg.PixelWidth, ximg.PixelHeight)
                 gfx.DrawImage(ximg, rect)
 
-            ElseIf i.EndsWith(".pdf") Then
+            ElseIf i.EndsWith(".pdf") Or i.EndsWith(".PDF") Then
                 'Create a fileStream from the specified file.
                 Dim fs As FileStream = New FileStream(i, FileMode.Open)
                 Dim imgStream As Stream = fs
@@ -51,7 +48,7 @@ Module Parser
                     gfx.DrawImage(form, rect)
                 Next
             Else
-                Console.WriteLine("Invalid file format.")
+                Console.WriteLine(i + "Has an invalid file format. I will ignore this file.")
             End If
         Next
 
