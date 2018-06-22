@@ -6,3 +6,6 @@ Right now, you must run the program inside of Visual Studio 2017 in order to cha
 If you want to use this code, however, change line 15, the `dirPath` variable, to whatever path you want to place the files in.
 
 Thank you for your visit!
+
+#### Dependencies.
+- This program uses the PDFSharp dependency. You can download it [here](http://www.pdfsharp.net/Downloads.ashx).
